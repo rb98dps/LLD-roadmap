@@ -33,7 +33,7 @@ public class Product1 {
         return new Product1Builder();
     }
 
-    public static class Product1Builder{
+    public final static class Product1Builder{
         private int id;
         private String name;
 

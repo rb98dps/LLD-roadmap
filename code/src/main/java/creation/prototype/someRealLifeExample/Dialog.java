@@ -1,6 +1,6 @@
 package creation.prototype.someRealLifeExample;
 
-import creation.prototype.ProtoType;
+import creation.prototype.someRealLifeExample.ProtoType;
 
 import java.util.ArrayList;
 import java.util.List;

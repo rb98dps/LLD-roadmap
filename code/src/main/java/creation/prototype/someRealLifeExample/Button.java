@@ -1,6 +1,5 @@
 package creation.prototype.someRealLifeExample;
 
-import creation.prototype.ProtoType;
 
 public class Button implements ProtoType {
     private String text;
