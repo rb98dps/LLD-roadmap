@@ -20,7 +20,7 @@ public class ParkingSlotManager {
     }
 
     public  Integer getEmptySlots(int level){
-        return Math.toIntExact(lots.get(level).stream().filter(parkingSlot -> !parkingSlot.assigned && parkingSlot.available).count());
+        return Math.toIntExact(lots.get(level).stream().filter(parkingSlot -> !parkingSlot.assigned.get() && parkingSlot.available).count());
     }
 
     public Map<Integer, List<ParkingSlot>> getLots() {

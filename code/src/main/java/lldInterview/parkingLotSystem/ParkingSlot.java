@@ -30,6 +30,6 @@ public class ParkingSlot {
     }
 
     public boolean isAvailable() {
-        return available && !assigned;
+        return available && !assigned.get();
     }
 }
