@@ -20,7 +20,8 @@ public class Main {
         prototypeRegistry.add("blue",dialog1);
 
         Dialog dialog11 = prototypeRegistry.get("red").get(0);
-        System.out.println(dialog11 == dialog1);
+        Dialog dialog12 = prototypeRegistry.get("red").get(0);
+        System.out.println(dialog11 == dialog12);
 
     }
 }

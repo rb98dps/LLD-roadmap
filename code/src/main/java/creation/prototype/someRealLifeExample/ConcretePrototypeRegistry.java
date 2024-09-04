@@ -5,9 +5,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class ConcretePrototypeRegistry<T,Q> implements PrototypeRegistry<T,Q>{
+public class ConcretePrototypeRegistry<T,Q extends ProtoType> implements PrototypeRegistry<T,Q>{
 
-    Map<T,List<Q>> map;
+    Map<T,List<Q >> map;
     @Override
     public void add(T id,Q type) {
         if(map == null){
@@ -24,7 +24,10 @@ public class ConcretePrototypeRegistry<T,Q> implements PrototypeRegistry<T,Q>{
 
     @Override
     public List<Q> get(T id) {
-      return map.get(id);
+      List<Q> list = map.get(id);
+        List<Q> list1 = new ArrayList<>();
+        list.forEach(q-> list1.add((Q) q.clone()) );
+        return list1;
     }
 
 }
