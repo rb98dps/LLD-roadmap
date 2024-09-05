@@ -1,108 +1,81 @@
 package lldInterview.preplaced.session3.splitwise;
 
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 public class Main {
 
-    public static GroupManager groupManager = GroupManager.getInstance();
-
-    public static ExpenseRebalancer expenseRebalancer = ExpenseRebalancer.getInstance();
+    public static Splitwise splitwise = new Splitwise();
 
     public static void main(String[] args) {
 
-        User user = new User("Rahul", "fadf", "3423525242");
-        User user1 = new User("Rahul1", "fadf", "3423525242");
-        User user2 = new User("Rahul2", "fadf", "3423525242");
-        User user3 = new User("Rahul3", "fadf", "3423525242");
-        Group group = new Group("first", user, new StraightUpRebalanceStrategy());
-        groupManager.addGroup(group);
-        groupManager.addGroupUser(group.getGroupId(), user.getUserId(), user1);
-        groupManager.addGroupUser(group.getGroupId(), user.getUserId(), user2);
-        groupManager.addGroupUser(group.getGroupId(), user.getUserId(), user3);
-        System.out.println(groupManager.getGroup(group.getGroupId()));
+        User user1 = splitwise.createUser("Rahul", "fasfdfdf", "3423525242");
+        User user2 = splitwise.createUser("Rahul1", "fafsfdf", "3423525242");
+        User user3 = splitwise.createUser("Rahul2", "sf", "3423525242");
+        User user4 = splitwise.createUser("Rahul3", "fadfdf", "3423525242");
 
-        Map<Integer, Double> payers = Map.of(0, 100d, 1, 500d, 2, 200d, 3, 60d);
-        Map<Integer, Double> splits = Map.of(0, 300d, 1, 100d, 2, 160d, 3, 300d);
+        Group g1 = splitwise.createGroup(user1.getUserId(), "Flat 1003", List.of(user2.getUserId(), user3.getUserId()));
+
+        Group g2 = splitwise.createGroup(user2.getUserId(), "Flat 1003", List.of(user1.getUserId(), user2.getUserId()));
+
+
+        System.out.println(splitwise.addUserToGroup(g1.getGroupId(), user2.getUserId(), user1.getUserId()));
+        System.out.println(splitwise.addUserToGroup(g1.getGroupId(), user3.getUserId(), user2.getUserId()));
+
+        System.out.println(splitwise.addUserToGroup(g1.getGroupId(), user4.getUserId(), user1.getUserId()));
+        System.out.println(g1);
+
+        Map<Integer, Pair> payers = Map.of(0, new Pair(100d, 300d), 1, new Pair(500d, 100d), 2, new Pair(200d, 160d), 3,
+                new Pair(60d, 300d));
+
         double total = 860;
-        Expense expense = new Expense(group.getGroupId(), "expense 1 ", splits, payers, total, user.getUserId());
+        Expense expense = new Expense(g1.getGroupId(), "expense 1 ", helper(payers), total, user1.getUserId());
 
-        System.out.println(expenseRebalancer.rebalance(expense));
-        group.addBalances(expenseRebalancer.rebalance(expense), expense.getTotExpense());
-        System.out.println(groupManager.getGroup(group.getGroupId()));
-        HashMap<Integer, List<Transaction>> finalBalances = group.getFinalBalances();
+        splitwise.addExpense(expense);
 
-        finalBalances.forEach((k,v) ->{
-            System.out.println("Transactions for " + k);
-            v.forEach(System.out::println);
-            System.out.println();
-        });
+        printTransaction(splitwise.getTransactions(user1.getUserId(), g1.getGroupId()),user1.getUserId());
 
-        Map<Integer, Double> payers1 = Map.of(1, 100d, 0, 500d, 2, 200d, 3, 60d);
-        Map<Integer, Double> splits1 = Map.of(0, 300d, 1, 100d, 2, 160d, 3, 300d);
-        double total1 = 860;
-        Expense expense1 = new Expense(group.getGroupId(), "expense 2 ", splits1, payers1, total1, user.getUserId());
+        printTransaction(splitwise.getTransactions(user3.getUserId(), g1.getGroupId()),user3.getUserId());
 
 
-        System.out.println(expenseRebalancer.rebalance(expense1));
-        group.addBalances(expenseRebalancer.rebalance(expense1), expense1.getTotExpense());
-        System.out.println(groupManager.getGroup(group.getGroupId()));
-        finalBalances = group.getFinalBalances();
+        payers = Map.of(0, new Pair(500d, 300d), 1, new Pair(100d, 100d), 2, new Pair(200d, 160d), 3,
+                new Pair(60d, 300d));
 
-        finalBalances.forEach((k,v) ->{
-            System.out.println("Transactions for " + k);
-            v.forEach(System.out::println);
-            System.out.println();
-        });
+        Expense expense1 = new Expense(g1.getGroupId(), "expense 2 ", helper(payers), total, user1.getUserId());
 
-        function();
+        g1.setRebalanceStrategy(new StraightUpRebalanceStrategy());
+        splitwise.addExpense(expense1);
+
+        printTransaction(splitwise.getTransactions(user1.getUserId(), g1.getGroupId()),user1.getUserId());
+
+        printTransaction(splitwise.getTransactions(user2.getUserId(), g1.getGroupId()),user2.getUserId());
+
+        splitwise.settle(new Transaction(1,400,3),g1.getGroupId());
+
+        printTransaction(splitwise.getTransactions(user2.getUserId(), g1.getGroupId()),user2.getUserId());
 
     }
 
-    private static void function() {
-        User user = new User("Rahul", "fadf", "3423525242");
-        User user1 = new User("Rahul1", "fadf", "3423525242");
-        User user2 = new User("Rahul2", "fadf", "3423525242");
-        User user3 = new User("Rahul3", "fadf", "3423525242");
-        Group group = new Group("first", user, new StraightUpRebalanceStrategy());
-        groupManager.addGroup(group);
-        groupManager.addGroupUser(group.getGroupId(), user.getUserId(), user1);
-        groupManager.addGroupUser(group.getGroupId(), user.getUserId(), user2);
-        groupManager.addGroupUser(group.getGroupId(), user.getUserId(), user3);
-        System.out.println(groupManager.getGroup(group.getGroupId()));
+    private static void printTransaction(List<Transaction> transactions, Integer userId) {
+        System.out.println("Transactions for " + userId);
+        transactions.forEach(System.out::println);
+    }
 
-        Map<Integer, Double> payers = Map.of(4, 100d, 5, 500d, 7, 200d, 6, 60d);
-        Map<Integer, Double> splits = Map.of(4, 300d, 5, 100d, 7, 160d, 6, 300d);
-        double total = 860;
-        Expense expense = new Expense(group.getGroupId(), "expense 1 ", splits, payers, total, user.getUserId());
+    public static List<Balance> helper(Map<Integer, Pair> payers) {
+        List<Balance> list = new ArrayList<>();
+        payers.forEach((k, v) -> list.add(new Balance(k, v.anInt, v.bnInt)));
+        return list;
+    }
 
-        System.out.println(expenseRebalancer.rebalance(expense));
-        group.addBalances(expenseRebalancer.rebalance(expense), expense.getTotExpense());
-        System.out.println(groupManager.getGroup(group.getGroupId()));
-        HashMap<Integer, List<Transaction>> finalBalances = group.getFinalBalances();
+    static class Pair {
 
-        finalBalances.forEach((k,v) ->{
-            System.out.println("Transactions for " + k);
-            v.forEach(System.out::println);
-            System.out.println();
-        });
+        double anInt;
+        double bnInt;
 
-        Map<Integer, Double> payers1 = Map.of(4, 100d, 6, 500d, 7, 200d, 5, 60d);
-        Map<Integer, Double> splits1 = Map.of(4, 300d, 7, 100d, 5, 160d, 6, 300d);
-        double total1 = 860;
-        Expense expense1 = new Expense(group.getGroupId(), "expense 2 ", splits1, payers1, total1, user.getUserId());
-
-
-        System.out.println(expenseRebalancer.rebalance(expense1));
-        group.addBalances(expenseRebalancer.rebalance(expense1), expense1.getTotExpense());
-        System.out.println(groupManager.getGroup(group.getGroupId()));
-        finalBalances = group.getFinalBalances();
-
-        finalBalances.forEach((k,v) ->{
-            System.out.println("Transactions for " + k);
-            v.forEach(System.out::println);
-            System.out.println();
-        });
+        public Pair(double anInt, double bnInt) {
+            this.anInt = anInt;
+            this.bnInt = bnInt;
+        }
     }
 }

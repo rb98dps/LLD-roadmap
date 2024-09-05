@@ -1,25 +1,23 @@
 package lldInterview.preplaced.session3.splitwise;
 
-import java.util.Map;
+import java.util.List;
 import java.util.UUID;
 
 public class Expense {
 
-    UUID expenseId;
-    Integer groupId;
-    String name;
-    Map<Integer, Double> splits;
-    Map<Integer, Double> payers;
-    double totExpense;
+    private UUID expenseId;
+    private Integer groupId;
+    private String name;
+    private List<Balance>  payers;
+    private double totExpense;
 
-    Integer expenseCreatorId;
+    private Integer expenseCreatorId;
 
-    public Expense(Integer groupId, String name, Map<Integer, Double> splits, Map<Integer, Double> payers,
+    public Expense(Integer groupId, String name,  List<Balance> payers,
                    double totExpense, Integer userId) {
         this.expenseId = UUID.randomUUID();
         this.groupId = groupId;
         this.name = name;
-        this.splits = splits;
         this.payers = payers;
         this.totExpense = totExpense;
         this.expenseCreatorId = userId;
@@ -39,18 +37,17 @@ public class Expense {
                        "expenseId=" + expenseId +
                        ", groupId=" + groupId +
                        ", name='" + name + '\'' +
-                       ", splits=" + splits +
                        ", payers=" + payers +
                        ", totExpense=" + totExpense +
                        ", expenseCreatorId=" + expenseCreatorId +
                        '}';
     }
 
-    public Map<Integer, Double> getPayers() {
+    public  List<Balance> getPayers() {
         return payers;
     }
 
-    public void setPayers(Map<Integer, Double> payers) {
+    public void setPayers( List<Balance> payers) {
         this.payers = payers;
     }
 
@@ -62,13 +59,6 @@ public class Expense {
         this.expenseId = expenseId;
     }
 
-    public Map<Integer, Double> getSplits() {
-        return splits;
-    }
-
-    public void setSplits(Map<Integer, Double> splits) {
-        this.splits = splits;
-    }
 
     public Integer getGroupId() {
         return groupId;

@@ -9,15 +9,15 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class Group {
 
     private static final AtomicInteger atomicInteger = new AtomicInteger(0);
-    public Map<Integer, Integer> userMaps = new HashMap<>();
-    public Map<Integer, Integer> userReverseMaps = new HashMap<>();
-    String name;
-    int groupId;
-    List<List<Double>> balances = new ArrayList<>();
-    int leaderId;
-    List<User> users = new ArrayList<>();
-    double totExpense;
-    RebalanceStrategy rebalanceStrategy;
+    private Map<Integer, Integer> userMaps = new HashMap<>();
+    private Map<Integer, Integer> userReverseMaps = new HashMap<>();
+    private String name;
+    private int groupId;
+    private List<List<Double>> balances = new ArrayList<>();
+    private int leaderId;
+    private List<User> users = new ArrayList<>();
+    private double totExpense;
+    private RebalanceStrategy rebalanceStrategy;
 
     public Group(String name, User user, RebalanceStrategy rebalanceStrategy) {
         this.name = name;
@@ -139,6 +139,10 @@ public class Group {
         return getFinalBalances().get(userId);
     }
 
+    public Integer getGroupId(Integer id){
+        return userMaps.get(id);
+    }
+
     public void addBalances(List<List<Double>> newBalances, double tot) {
         int n = userMaps.size();
         for (int i = 0; i < n; i++) {
@@ -148,5 +152,13 @@ public class Group {
             }
         }
         totExpense += tot;
+    }
+
+    public void settle(Integer sender, Integer receiver, Double val){
+        sender = userMaps.get(sender);
+        receiver = userMaps.get(receiver);
+        Double newValue = balances.get(sender).get(receiver) + val;
+        balances.get(sender).set(receiver,newValue);
+        balances.get(receiver).set(sender,-newValue);
     }
 }
