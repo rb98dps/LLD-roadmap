@@ -2,9 +2,9 @@ package lldInterview.preplaced.session3.splitwise;
 
 public class Transaction {
 
-    int senderId;
-    double balance;
-    int receiverId;
+    private int senderId;
+    private double balance;
+    private int receiverId;
 
     public Transaction(int senderId, double balance, int receiverId) {
         this.senderId = senderId;

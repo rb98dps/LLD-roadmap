@@ -4,14 +4,12 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class UserManager {
-
     private static final UserManager userManager = new UserManager();
-    Map<Integer, User> users = new HashMap<>();
+    private final Map<Integer, User> users = new HashMap<>();
 
     private UserManager() {
 
     }
-
     public static UserManager getInstance() {
         return userManager;
     }

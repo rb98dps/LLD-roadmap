@@ -6,12 +6,12 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class User {
 
     private static final AtomicInteger atomicInteger = new AtomicInteger(0);
-    String name;
-    String password;
+    private String name;
+    private String password;
 
-    String phNo;
-    int userId;
-    List<Group> groups;
+    private String phNo;
+    private int userId;
+    private List<Group> groups;
     public User(String name, String password, String phNo) {
         this.name = name;
         this.password = password;
